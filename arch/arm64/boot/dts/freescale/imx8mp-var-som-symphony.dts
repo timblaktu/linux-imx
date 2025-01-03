@@ -7,7 +7,7 @@
 #include "imx8mp-var-som.dtsi"
 
 / {
-	model = "Xilica Testarossa Board based on Variscite Symphony-Board with VAR-SOM-MX8M-PLUS";
+	model = "Xilica Testarossa carrier board based on Variscite Symphony-Board with VAR-SOM-MX8M-PLUS";
 
 	chosen {
 		stdout-path = &uart2;
@@ -101,9 +101,6 @@
 	ak4558: codec {
 		#sound-dai-cells = <0>;
 		compatible = "asahi-kasei,ak4558";
-		//compatible = "linux,snd-soc-dummy";
-		//clocks = <&audio_blk_ctrl IMX8MP_CLK_AUDIO_BLK_CTRL_SAI2_MCLK1>;
-		//clock-names = "mclk";
 		status = "okay";
 	};
 
@@ -151,7 +148,7 @@
             eee-broken-1000t;
 
             // BEGIN: NOT-IN Arthurs original kernel
-            reset-gpios = <&pca9534 5 GPIO_ACTIVE_LOW>;
+            //reset-gpios = <&pca9534 5 GPIO_ACTIVE_LOW>;
 			reset-assert-us = <10000>;
 			reset-deassert-us = <20000>;
 			vddio-supply = <&vddio1>;
@@ -161,7 +158,6 @@
 				regulator-max-microvolt = <1800000>;
 			};
 			// END:   NOT-IN Arthurs original kernel
-
 		};
 	};
 };
@@ -216,7 +212,6 @@
 		};
         // END:   NOT-IN Arthurs original kernel
 	};
-
 };
 
 &i2c4 {
@@ -273,7 +268,6 @@
 };
 
 &usb_dwc3_0 {
-	//dr_mode = "otg";
 	dr_mode = "host";
 	hnp-disable;
 	srp-disable;
@@ -286,6 +280,7 @@
 	role-switch-default-mode = "none";
 	snps,dis-u1-entry-quirk;
 	snps,dis-u2-entry-quirk;
+
 	port {
 		usb3_drd_sw: endpoint {
 			remote-endpoint = <&typec_dr_sw>;
@@ -332,14 +327,13 @@
 	assigned-clocks = <&clk IMX8MP_CLK_SAI2>;
 	assigned-clock-parents = <&clk IMX8MP_AUDIO_PLL1_OUT>;
 	assigned-clock-rates = <24576000>;
-	clocks = <&audio_blk_ctrl IMX8MP_CLK_AUDIO_BLK_CTRL_SAI2_IPG>,
+	clocks = <&audio_blk_ctrl IMX8MP_CLK_AUDIOMIX_SAI2_IPG>,
 			<&clk IMX8MP_CLK_DUMMY>,
-			<&audio_blk_ctrl IMX8MP_CLK_AUDIO_BLK_CTRL_SAI2_MCLK1>,
+			<&audio_blk_ctrl IMX8MP_CLK_AUDIOMIX_SAI2_MCLK1>,
 			<&clk IMX8MP_CLK_DUMMY>,
 			<&clk IMX8MP_CLK_DUMMY>,
 			<&clk IMX8MP_AUDIO_PLL1_OUT>,
 			<&clk IMX8MP_AUDIO_PLL2_OUT>;
-
 	clock-names = "bus", "mclk0", "mclk1", "mclk2", "mclk3", "pll8k", "pll11k";
 	//fsl,sai-mclk-direction-output;
 	fsl,sai-synchronous-rx;
@@ -356,11 +350,13 @@
 		output-high;
 		line-name = "ac_reset";
 	};
-
 };
 
 &iomuxc {
 	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_ecspi2>;
+	cs-gpios = <&gpio5 13 GPIO_ACTIVE_LOW>;
+	status = "okay";
 
 	pinctrl_gpio_ac: acrst {
 		fsl,pins = <
@@ -374,7 +370,7 @@
 		>;
 	};
 
-	pinctrl_gpio_led: ledgrp {
+    pinctrl_gpio_led: ledgrp {
 		fsl,pins = <
 			MX8MP_IOMUXC_HDMI_CEC__GPIO3_IO28				0x1c2
 			MX8MP_IOMUXC_HDMI_HPD__GPIO3_IO29				0x1c2
