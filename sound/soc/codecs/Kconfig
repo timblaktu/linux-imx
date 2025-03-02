@@ -588,6 +588,11 @@ config SND_SOC_AK4535
 config SND_SOC_AK4554
 	tristate "AKM AK4554 CODEC"
 
+config SND_SOC_AK4558
+    tristate "AK4558 audio codec"
+    help
+        This is a custom kernel module for the AK4558EN 32-bit 2 channel audio CODEC by Asahi Kasei. See the product page for details: https://www.akm.com/us/en/products/audio/audio-codec/ak4558en"
+
 config SND_SOC_AK4613
 	tristate "AKM AK4613 CODEC"
 	depends on I2C
